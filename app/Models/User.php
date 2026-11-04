@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use App\Enums\UserRoles;
 use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
@@ -56,7 +58,25 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
         $initials = Str::initials($this->name, true);
 
         return Str::length($initials) > 1
-            ? Str::substr($initials, 0, 1).Str::substr($initials, -1)
+            ? Str::substr($initials, 0, 1) . Str::substr($initials, -1)
             : $initials;
+    }
+
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->roles->contains('slug', UserRoles::SUPER_ADMIN->value);
+    }
+
+
+    public function assignRoles(array $roles): void
+    {
+        $roleIds = Role::query()->whereIn('slug', $roles)->pluck('id');
+        $this->roles()->syncWithoutDetaching($roleIds);
+    }
+
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class, 'user_roles', 'user_id');
     }
 }
