@@ -7,8 +7,20 @@
 
         <form method="POST" action="{{ route('register.store') }}" class="flex flex-col gap-6">
             @csrf
+
+            <x-radio-group
+                name="userVariant"
+                :label="__('Account type')"
+                :options="[
+                    \App\Enums\UserRoles::BAYER->value => __('Buyer'),
+                    \App\Enums\UserRoles::SELLER->value => __('Seller'),
+                ]"
+                :value="old('userVariant', \App\Enums\UserRoles::BAYER->value)"
+                required
+            />
+
             <!-- Name -->
-            <flux:input
+            <x-ghost-input
                 name="name"
                 :label="__('Name')"
                 :value="old('name')"
@@ -16,40 +28,36 @@
                 required
                 autofocus
                 autocomplete="name"
-                :placeholder="__('Full name')"
             />
 
             <!-- Email Address -->
-            <flux:input
+            <x-ghost-input
                 name="email"
                 :label="__('Email address')"
                 :value="old('email')"
                 type="email"
                 required
                 autocomplete="email"
-                placeholder="email@example.com"
             />
 
             <!-- Password -->
-            <flux:input
+            <x-ghost-input
                 name="password"
                 :label="__('Password')"
                 type="password"
                 required
                 autocomplete="new-password"
-                :placeholder="__('Password')"
                 passwordrules="{{ \Illuminate\Validation\Rules\Password::defaults()->toPasswordRulesString() }}"
                 viewable
             />
 
             <!-- Confirm Password -->
-            <flux:input
+            <x-ghost-input
                 name="password_confirmation"
                 :label="__('Confirm password')"
                 type="password"
                 required
                 autocomplete="new-password"
-                :placeholder="__('Confirm password')"
                 passwordrules="{{ \Illuminate\Validation\Rules\Password::defaults()->toPasswordRulesString() }}"
                 viewable
             />

@@ -23,16 +23,39 @@
     --color-zinc-900: #171717;
     --color-zinc-950: #0a0a0a;
 
-    --color-accent: var(--color-neutral-800);
-    --color-accent-content: var(--color-neutral-800);
+    --color-primary: #0f9d58;
+    --color-primary-hover: #088149;
+    --color-primary-content: #087a44;
+    --color-primary-foreground: var(--color-white);
+
+    --color-accent: hsla(0, 100%, 35%, 1);
+    --color-accent-hover: hsla(0, 100%, 28%, 1);
+    --color-accent-content: var(--color-accent);
     --color-accent-foreground: var(--color-white);
+
+    --color-background: #f0f3f5;
+    --color-surface: var(--color-white);
+    --color-foreground: #30383b;
+    --color-muted: #6b7280;
+    --color-border: #dfe5e9;
+    --color-subtle: #f3fff9;
+
+    --radius-button: 0.625rem;
+    --radius-input: 0.625rem;
+    --radius-card: 0.875rem;
 }
 
 @layer theme {
     .dark {
-        --color-accent: var(--color-white);
-        --color-accent-content: var(--color-white);
-        --color-accent-foreground: var(--color-neutral-800);
+        --color-primary-content: #5ee9a4;
+        --color-accent-content: hsla(0, 100%, 75%, 1);
+
+        --color-background: #18191b;
+        --color-surface: #202123;
+        --color-foreground: #f5f5f5;
+        --color-muted: #a3a3a3;
+        --color-border: #34373b;
+        --color-subtle: #1b3025;
     }
 }
 

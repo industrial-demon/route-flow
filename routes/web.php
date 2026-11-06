@@ -14,4 +14,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 });
 
+Route::livewire('root', 'features.auth.register');
+
 require __DIR__ . '/settings.php';
