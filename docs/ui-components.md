@@ -14,28 +14,30 @@ The screenshot examples can be built with the reusable Blade button:
 <x-button class="w-40">New Connection</x-button>
 
 {{-- 78 × 35px, red accent, 10px radius --}}
-<x-button color="accent" size="sm" class="w-[78px]">Stop</x-button>
+<x-button variant="danger" size="sm" class="w-[78px]">Stop</x-button>
 
 {{-- 91 × 35px, neutral outline, 10px radius --}}
-<x-button color="neutral" size="sm" outline class="w-[91px]">Cancel</x-button>
+<x-button variant="outline" size="sm" class="w-[91px]">Cancel</x-button>
 
-<x-button color="accent" size="sm">Delete</x-button>
+<x-button variant="danger" size="sm">Delete</x-button>
 ```
 
 | Prop | Default | Values |
 | --- | --- | --- |
 | `type` | `button` | Native button types (`button`, `submit`, `reset`) |
-| `variant` | `solid` | `solid`, `outline`, `ghost` |
-| `color` | `primary` | `primary` (green), `accent` (red), `neutral` |
+| `variant` | `primary` | `primary` (green), `danger` (red), `secondary` (gray), `outline`, `ghost` |
 | `size` | `md` | `sm` (35px), `md` (40px), `lg` (48px) |
 | `radius` | `default` | `default` (10px), `none`, `sm`, `md`, `lg`, `full` |
-| `outline` | `false` | Boolean shortcut for `variant="outline"` |
 | `disabled` | `false` | Native disabled state |
 | `full-width` | `false` | Fill the available width |
 
-Pass booleans with Blade bindings for dynamic values: `:disabled="$saving"`,
-`:outline="$outlined"`, or `:full-width="true"`. Bare `outline` and `disabled`
-attributes also enable their respective states.
+The variant defines both color and appearance; there is no separate `color`
+prop or boolean `outline` shortcut. Use `variant="outline"` for the border-only
+style. Unsupported variant names raise an error instead of silently changing
+the style.
+
+Pass booleans with Blade bindings for dynamic values: `:disabled="$saving"`
+or `:full-width="true"`. A bare `disabled` attribute also disables the button.
 
 The component forwards HTML, Alpine, and Livewire attributes to the native
 button. It defaults to `type="button"` so it does not submit a surrounding form

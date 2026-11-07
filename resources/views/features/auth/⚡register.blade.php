@@ -121,7 +121,7 @@ new class extends Component {
         />
 
         <div class="flex items-center justify-end">
-            <x-button type="submit" variant="solid" color="primary" class="w-full" data-test="register-user-button">
+            <x-button type="submit" variant="primary" class="w-full" data-test="register-user-button">
                 {{ __('Create account') }}
             </x-button>
         </div>

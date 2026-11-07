@@ -33,6 +33,8 @@ return [
     'component_namespaces' => [
         'layouts' => resource_path('views/layouts'),
         'pages' => resource_path('views/pages'),
+        'seller' => resource_path('views/seller'),
+        'bayer' => resource_path('views/bayer'),
     ],
 
     /*
