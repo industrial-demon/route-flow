@@ -2,7 +2,9 @@
 
 use App\Enums\UserRoles;
 use App\Models\User;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
 use Laravel\Fortify\Features;
 use Livewire\Livewire;
 
@@ -15,7 +17,10 @@ beforeEach(function () {
 test('registration screen can be rendered', function () {
     $response = $this->get(route('register'));
 
-    $response->assertOk();
+    $response->assertOk()
+        ->assertSeeLivewire('features.auth.register')
+        ->assertSee('Create an account')
+        ->assertSee('wire:submit="save"', false);
 });
 
 test('new users can register', function () {
@@ -57,6 +62,8 @@ test('registration assigns the selected account role', function (string $role) {
 ]);
 
 test('livewire registration uses the selected account type', function (string $role) {
+    Event::fake([Registered::class]);
+
     Livewire::test('features.auth.register')
         ->assertSet('userVariant', UserRoles::BAYER->value)
         ->assertSee('Buyer')
@@ -67,14 +74,33 @@ test('livewire registration uses the selected account type', function (string $r
         ->set('password_confirmation', 'password')
         ->set('userVariant', $role)
         ->call('save')
-        ->assertHasNoErrors();
+        ->assertHasNoErrors()
+        ->assertRedirect(route('dashboard', absolute: false));
 
-    expect(User::where('email', 'test@example.com')->sole()->roles->pluck('slug')->all())
+    $user = User::where('email', 'test@example.com')->sole();
+
+    expect($user->roles->pluck('slug')->all())
         ->toBe([$role]);
+    $this->assertAuthenticatedAs($user);
+    Event::assertDispatched(Registered::class, fn (Registered $event) => $event->user->is($user));
 })->with([
     'buyer' => UserRoles::BAYER->value,
     'seller' => UserRoles::SELLER->value,
 ]);
+
+test('invalid livewire registration shows validation errors without creating a user', function () {
+    Livewire::test('features.auth.register')
+        ->set('name', 'John Doe')
+        ->set('email', 'invalid-email')
+        ->set('password', 'password')
+        ->set('password_confirmation', 'different-password')
+        ->set('userVariant', UserRoles::SUPER_ADMIN->value)
+        ->call('save')
+        ->assertHasErrors(['email', 'password', 'userVariant']);
+
+    $this->assertDatabaseCount('users', 0);
+    $this->assertGuest();
+});
 
 test('registration rejects unsupported account roles', function (string $role) {
     $response = $this->post(route('register.store'), [

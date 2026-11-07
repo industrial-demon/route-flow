@@ -76,8 +76,12 @@
                 x-on:click="revealed = !revealed; $nextTick(() => $refs.input.focus({ preventScroll: true }))"
                 @disabled($disabled)
             >
-                <flux:icon.eye class="size-5" x-show="!revealed" aria-hidden="true" />
-                <flux:icon.eye-slash class="size-5" x-show="revealed" x-cloak aria-hidden="true" />
+                <span x-show="!revealed" aria-hidden="true">
+                    <x-icons.eye width="20" height="20" />
+                </span>
+                <span x-show="revealed" x-cloak aria-hidden="true">
+                    <x-icons.visibility_off width="20" height="20" />
+                </span>
             </button>
         @endif
     </div>

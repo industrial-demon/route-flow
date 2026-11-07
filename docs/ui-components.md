@@ -79,7 +79,7 @@ change the selection, and standard form submission includes the selected value.
 />
 ```
 
-This example is included in both registration forms. `BAYER` is the
+This example is included in the shared Livewire registration form. `BAYER` is the
 existing buyer enum value in this app; the visible label is "Buyer".
 
 Registration passes `userVariant` to `CreateNewUser`, which accepts only
@@ -177,5 +177,18 @@ placeholder as a single space for CSS empty-state detection; use `label` for
 the visible prompt. Password visibility uses the Alpine already bundled with
 Livewire. The floating label itself does not need JavaScript.
 
-Both registration forms use this component. Error messages automatically use
+The registration form uses this component. Error messages automatically use
 the red accent and are linked to the input along with any description.
+
+## Registration form
+
+The registration markup and behavior live in
+`resources/views/features/auth/⚡register.blade.php`. The public `/register`
+page keeps its Fortify route and auth layout; its Blade view only mounts
+`<livewire:features.auth.register />`. The `/root` development route renders
+the same component as a full page.
+
+The form submits through `wire:submit="save"`, validates via `CreateNewUser`,
+assigns Buyer or Seller, dispatches the standard registration event, signs in
+the new user, regenerates the session, and follows Fortify's intended redirect.
+Its POST action and CSRF field also preserve the standard form fallback.
