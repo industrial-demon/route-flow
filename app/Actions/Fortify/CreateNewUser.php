@@ -5,6 +5,7 @@ namespace App\Actions\Fortify;
 use App\Concerns\PasswordValidationRules;
 use App\Concerns\ProfileValidationRules;
 use App\Enums\UserRoles;
+use App\Enums\UserType;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -23,24 +24,33 @@ class CreateNewUser implements CreatesNewUsers
      */
     public function create(array $input): User
     {
-        $input += ['userVariant' => UserRoles::BAYER->value];
 
         Validator::make($input, [
             ...$this->profileRules(),
             'password' => $this->passwordRules(),
-            'userVariant' => ['required', 'string', Rule::in([
-                UserRoles::BAYER->value,
-                UserRoles::SELLER->value,
-            ])],
+            'userVariant' => [
+                'required',
+                'string',
+                Rule::enum(UserType::class)->only(
+                    [
+                        UserType::BUYER,
+                        UserType::SELLER,
+                        UserType::LOGISTICS
+                    ]
+                )
+            ],
         ])->validate();
 
         return DB::transaction(function () use ($input): User {
-            $role = Role::firstOrCreate(['slug' => $input['userVariant']]);
+            $userType = UserType::from($input['userVariant']);
+            $userRole = UserRoles::roleFromType($userType);
+            $role = Role::where(['slug' => $userRole->value])->get();
 
             $user = User::create([
                 'name' => $input['name'],
                 'email' => $input['email'],
                 'password' => $input['password'],
+                'type' =>  $userType->value
             ]);
 
             $user->roles()->attach($role);

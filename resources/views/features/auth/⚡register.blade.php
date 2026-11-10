@@ -2,6 +2,7 @@
 
 use App\Actions\Fortify\CreateNewUser;
 use App\Enums\UserRoles;
+use App\Enums\UserType;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Support\Str;
@@ -14,7 +15,7 @@ new class extends Component {
     public string $email = '';
     public string $password = '';
     public string $password_confirmation = '';
-    public string $userVariant = UserRoles::BAYER->value;
+    public string $userVariant = UserType::BUYER->value;
 
     public function mount(): void
     {
@@ -71,8 +72,9 @@ new class extends Component {
             name="userVariant"
             :label="__('Account type')"
             :options="[
-                \App\Enums\UserRoles::BAYER->value => __('Buyer'),
-                \App\Enums\UserRoles::SELLER->value => __('Seller'),
+               \App\Enums\UserType::SELLER->value => __('Seller'), 
+                \App\Enums\UserType::BUYER->value => __('Buyer'),
+                \App\Enums\UserType::LOGISTICS->value => __('LOGISTICS'),
             ]"
             :value="$userVariant"
             wire:model="userVariant"
